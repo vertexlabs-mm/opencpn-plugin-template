@@ -1,4 +1,4 @@
-git clone --recurse-submodules -b main https://github.com/cbensassi2/cleanOcpnPlugin\n
+git clone --recurse-submodules -b main https://github.com/cbensassi2/cleanOcpnPlugin/n
 cd cleanOcpnPlugin
 mkdir build
 cd build
