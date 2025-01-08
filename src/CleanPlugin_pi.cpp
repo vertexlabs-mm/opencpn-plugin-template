@@ -98,11 +98,11 @@ void CleanPlugin_pi::LateInit(void) {
     m_pauimgr = GetFrameAuiManager();
     if (!m_pauimgr) return ;  // No AUI manager, no party
 
-    EnableSplitScreenLayout(true);
+    //EnableSplitScreenLayout(true);
 
     InitLogger();  //Init custom logger
 
-    EnableLegacyUi(false);
+    EnableLegacyUi(true);
 
     DLOG("Clean Plugin Initialized Late init");
 }
