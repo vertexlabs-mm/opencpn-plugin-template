@@ -106,6 +106,8 @@ private:
     wxFont *m_Font_DC;
     wxFrame* m_gFrame;
  
+
+    void RenderHelloWorld(PlugIn_ViewPort *vp);
     
 };
 

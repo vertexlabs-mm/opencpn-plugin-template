@@ -142,11 +142,60 @@ bool CleanPlugin_pi::MouseEventHook(wxMouseEvent &event) {
 }
 
 
+void CleanPlugin_pi::RenderHelloWorld(PlugIn_ViewPort *vp)
+{
+    // Vérifier que nous avons un DC valide
+    if (!m_pidc) return;
+    
+    // Position du texte (centre de l'écran)
+    int x = vp->pix_width / 2;
+    int y = vp->pix_height / 2;
+    
+    // Texte à afficher
+    wxString text = _T("Hello World");
+    
+    // Sauvegarder l'état actuel du DC
+    wxPen oldPen = m_pidc->GetPen();
+    wxBrush oldBrush = m_pidc->GetBrush();
+    wxFont oldFont = m_pidc->GetFont();
+    
+    // Configurer la police (plus grande pour être visible)
+    wxFont font = *m_Font_DC;
+    font.SetPointSize(20);
+    font.SetWeight(wxFONTWEIGHT_BOLD);
+    m_pidc->SetFont(font);
+    
+    // Mesurer le texte pour l'encadré
+    int text_width, text_height;
+    m_pidc->GetTextExtent(text, &text_width, &text_height);
+    
+    // Définir les marges pour l'encadré
+    int margin = 10;
+    int rect_x = x - text_width/2 - margin;
+    int rect_y = y - text_height/2 - margin;
+    int rect_width = text_width + 2*margin;
+    int rect_height = text_height + 2*margin;
+    
+    // Dessiner le rectangle de fond (blanc semi-transparent)
+    m_pidc->SetBrush(wxBrush(wxColour(255, 255, 255, 200)));
+    m_pidc->SetPen(wxPen(wxColour(255, 0, 0), 3)); // Bordure rouge épaisse
+    m_pidc->DrawRectangle(rect_x, rect_y, rect_width, rect_height);
+    
+    // Dessiner le texte en rouge
+    m_pidc->SetTextForeground(wxColour(255, 0, 0)); // Rouge
+    m_pidc->DrawText(text, x - text_width/2, y - text_height/2);
+    
+    // Restaurer l'état du DC
+    m_pidc->SetPen(oldPen);
+    m_pidc->SetBrush(oldBrush);
+    m_pidc->SetFont(oldFont);
+}
 
 bool CleanPlugin_pi::RenderGLOverlayMultiCanvas(wxGLContext *pcontext,PlugIn_ViewPort *vp, int canvasIndex,int priority) 
 {
     if (priority != 128 ) return false;
    
+    RenderHelloWorld(vp);
 
     return true;
 }
