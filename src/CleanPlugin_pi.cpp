@@ -46,8 +46,8 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin *p) { delete p; }
 CleanPlugin_pi::CleanPlugin_pi(void *ppimgr) 
     : opencpn_plugin_119(ppimgr)
     , wxTimer(this)
-    , m_pidc(nullptr)
     , m_pauimgr(nullptr)
+    , m_pidc(nullptr)
     , m_gFrame(nullptr)
 {
     // Basic icon init
@@ -319,8 +319,23 @@ wxBitmap CleanPlugin_pi::LoadSVG(const wxString& filename, int width, int height
     fn.AppendDir(_T("data"));
     fn.SetFullName(filename);
     wxSize svgSize(width, height);
+    
+#if wxCHECK_VERSION(3, 1, 6)
+    // Use wxBitmapBundle for wxWidgets 3.1.6+
     wxBitmapBundle bb = wxBitmapBundle::FromSVGFile(fn.GetFullPath(), svgSize);
     return bb.GetBitmap(svgSize);
+#else
+    // Fallback for older wxWidgets versions - load as regular bitmap
+    wxBitmap bitmap;
+    if (bitmap.LoadFile(fn.GetFullPath(), wxBITMAP_TYPE_ANY)) {
+        if (width > 0 && height > 0) {
+            wxImage image = bitmap.ConvertToImage();
+            image = image.Scale(width, height, wxIMAGE_QUALITY_HIGH);
+            bitmap = wxBitmap(image);
+        }
+    }
+    return bitmap;
+#endif
 }
 
 //----------------------------------------------------------------------------------
